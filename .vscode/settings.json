@@ -1,0 +1,5 @@
+{
+	"github.copilot.chat.codeGeneration.instructions": [
+		{"text": "Use tab indentation."}
+	]
+}
