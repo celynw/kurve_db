@@ -1,5 +1,20 @@
 from enum import Enum
 
+common_headers = {
+	"Accept": "application/json",
+	"Accept-Encoding": "gzip, deflate, br, zstd",
+	"Accept-Language": "en-GB,en;q=0.5",
+	"Connection": "keep-alive",
+	"DNT": "1",
+	"Host": "api.mykurve.com",
+	"Origin": "https://www.mykurve.com",
+	"Referer": "https://www.mykurve.com/",
+	"Sec-Fetch-Dest": "empty",
+	"Sec-Fetch-Mode": "cors",
+	"Sec-Fetch-Site": "same-site",
+	"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0",
+}
+
 
 class PeriodType(Enum):
 	"""
