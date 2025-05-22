@@ -1,0 +1,27 @@
+{
+	"domain": "kurve",
+	"name": "Kurve",
+	"version": "0.1.0",
+	"integration_type": "service",
+	"documentation": "https://github.com/celynw/kurve_db",
+	"issue_tracker": "https://github.com/celynw/kurve_db/issues",
+	"dependencies": [],
+	"after_dependencies": [],
+	"codeowners": [
+		"@celynw"
+	],
+	"config_flow": true,
+	"single_config_entry": false,
+	"requirements": [
+		"requests~=2.32",
+		"SQLAlchemy~=2.0",
+		"rich~=13.9",
+		"typer~=0.12",
+		"kellog~=1.0",
+		"pyotp>=2.9.0",
+		"inflection>=0.5.1"
+	],
+	"loggers": [
+		"kurve"
+	]
+}
