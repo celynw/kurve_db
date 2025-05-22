@@ -51,6 +51,14 @@ unfixable = [
 quote-style = "double"
 indent-style = "tab"
 
+[tool.uv.sources]
+kurve-scraper = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "kurve-scraper",
+]
+
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
 
