@@ -1,9 +1,10 @@
+import pyotp
 import requests
 
 from kurve_scraper.consts import common_headers
 
 
-def get_token(username: str, password: str, cookie: str) -> str:
+def get_token(username: str, password: str, totp_secret: str = "") -> str:
 	"""
 	Make a POST requesting the access token and return it.
 
@@ -13,6 +14,8 @@ def get_token(username: str, password: str, cookie: str) -> str:
 		Email address
 	password
 		Password
+	totp_secret: optional
+		Two-factor authentication secret
 
 	Returns
 	-------
@@ -23,12 +26,9 @@ def get_token(username: str, password: str, cookie: str) -> str:
 	RuntimeError
 		Failed to retrieve token
 	"""
-	url = "https://api.mykurve.com/connect/token"
-	headers = common_headers.copy()
-	headers["Content-Type"] = "application/x-www-form-urlencoded"
-	headers["Content-Length"] = "116"
-	headers["Cookie"] = cookie
-	headers["Priority"] = "u=0"
+	s = requests.Session()
+	s.headers.update(common_headers)
+
 	data = {
 		"username": username,
 		"password": password,
@@ -37,11 +37,23 @@ def get_token(username: str, password: str, cookie: str) -> str:
 		"client_id": "ApiClient",
 	}
 
-	response = requests.post(url, headers=headers, data=data, timeout=3)
+	# Initial request
+	r1 = s.post("https://api.mykurve.com/connect/token", data=data)
+	if r1.status_code == 200:
+		return r1.json()["access_token"]
 
-	if response.status_code == 200:
-		return response.json()["access_token"]
-	raise RuntimeError(f"Failed to retrieve token: {response.status_code}")
+	# Check if MFA is required
+	if r1.status_code == 400 and "mfaCode required" in r1.text:
+		if not totp_secret:
+			raise RuntimeError("MFA code required, but no TOTP secret provided.")
+		totp = pyotp.TOTP(totp_secret)
+		data["mfaCode"] = totp.now()
+		r2 = s.post("https://api.mykurve.com/connect/token", data=data)
+		if r2.status_code == 200:
+			return r2.json()["access_token"]
+		raise RuntimeError(f"Failed to retrieve access token with MFA: {r2.status_code} {r2.text}")
+
+	raise RuntimeError(f"Failed to retrieve access token: {r1.status_code} {r1.text}")
 
 
 def get_account(token: str) -> int:

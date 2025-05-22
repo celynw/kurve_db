@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import requests
 import typer
 from kellog import debug, error, info, warning
@@ -47,10 +46,10 @@ def main(account_number: int, token: str) -> None:
 if __name__ == "__main__":
 	username = ""
 	password = ""
-	cookie = ""
+	totp_secret = ""
 
 	info("Getting token...")
-	token = get_token(username=username, password=password, cookie=cookie)
+	token = get_token(username=username, password=password, totp_secret=totp_secret)
 	debug(f"token: {token}")
 	info("Getting account...")
 	account_number = get_account(token=token)
